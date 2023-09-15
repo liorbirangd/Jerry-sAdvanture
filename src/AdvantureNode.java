@@ -1,8 +1,13 @@
 import java.util.ArrayList;
+import java.util.List;
 
 public class AdvantureNode {
 
     private int stateId;
+    public int getStateId() {
+        return stateId;
+    }
+
     private String text;
     public String getText() {
         return text;
@@ -16,7 +21,7 @@ public class AdvantureNode {
         this.text = text;
         transitions = new ArrayList<>();
     }
-    public void initTransitions(ArrayList<Transition> trans){
+    public void initTransitions(List<Transition> trans){
         for(Transition transition :trans){
             transitions.add(new Transition(transition));
         }

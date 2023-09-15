@@ -1,6 +1,11 @@
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 import java.util.Scanner;
 import java.time.LocalDateTime;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class Main {
     private static Scanner scanner;
@@ -13,6 +18,7 @@ public class Main {
         printTitle();
         readInitInput();
         initNodes();
+        initTransitions();
         startAdvanture();
     }
 
@@ -89,9 +95,9 @@ public class Main {
             case GoWest:
                 return ">>Go west";
             case Invalid:
-                return "The input is invalid, pleas try again:";
+                return "The input is invalid, \npleas try again:";
             case OpenDoor:
-                return ">>Opent the door";
+                return ">>Open the door";
             case TakeItem:
                 return ">>Take item";
             case UseItem:
@@ -108,6 +114,7 @@ public class Main {
     }
 
     // #region GmaeStart
+    // #endregion
     // Print the ASCII art fot the game title
     private static void printTitle() {
         System.out.println("\r\n" +
@@ -156,12 +163,21 @@ public class Main {
         nodes.add(node);
         node = new AdvantureNode(
                 "\nThis is the second Node" +
-                    "What would you like to do?: ",
+                        "\nWhat would you like to do?: ",
                 1);
         nodes.add(node);
     }
-    private static void initTransitions(){
-        nodes[0].
+
+    private static void initTransitions() {
+        Transition t = new Transition(getNodeById(1), InputCode.OpenDoor);
+        getNodeById(0).initTransitions(Arrays.asList(t));
     }
-    // #endregion
+
+    private static AdvantureNode getNodeById(int id) {
+        Optional<AdvantureNode> optional = nodes.stream().filter(n -> n.getStateId() == id).findFirst();
+        if (optional.isPresent()) {
+            return optional.get();
+        }
+        return null;
+    }
 }
