@@ -7,5 +7,6 @@ public enum InputCode{
     GoWest,
     TakeItem,
     DropItem,
-    UseItem
+    UseItem,
+    Quit
 }
