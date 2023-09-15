@@ -1,8 +1,5 @@
 import java.util.ArrayList;
 import java.util.Scanner;
-
-import Enums.inputCode;
-
 import java.time.LocalDateTime;
 
 public class Main {
@@ -19,56 +16,95 @@ public class Main {
         startAdvanture();
     }
 
+    private static AdvantureNode current;
+
+    // The main game loop
     private static void startAdvanture() {
-        AdvantureNode current = nodes.get(0);
-        String input;
+        current = nodes.get(0);
+        InputCode inputCode = null;
         // Run through all nodes until reacing a null node
         // Print node text, and wait for player's input
         while (current != null) {
-            System.out.print(current.text);
-
-            System.out.println(input);
-            AdvantureNode n = current.options.get(0);
-            current = n;
+            System.out.print(current.getText());
+            inputCode = getInput();
+            while (inputCode == InputCode.Invalid) {
+                System.out.println(getInputString(InputCode.Invalid));
+                inputCode = getInput();
+            }
+            System.out.println(getInputString(inputCode));
+            takeAction(inputCode);
         }
     }
 
-    private static inputCode waitForInput() {
+    // Recieve input from the player and check for validity
+    private static InputCode getInput() {
         String input = scanner.nextLine();
-        inputCode code = inputCode.Invalid;
+        InputCode actionCode = InputCode.Invalid;
         switch (input.toLowerCase()) {
             case "open the door":
             case "open door":
-                code = inputCode.OpenDoor;
+                actionCode = InputCode.OpenDoor;
                 break;
             case "go north":
             case "north":
-                code = inputCode.GoNorth;
+                actionCode = InputCode.GoNorth;
                 break;
             case "go east":
             case "east":
-                code = inputCode.GoEast;
+                actionCode = InputCode.GoEast;
                 break;
             case "go west":
             case "west":
-                code = inputCode.GoWest;
+                actionCode = InputCode.GoWest;
                 break;
             case "go south":
             case "south":
-                code = inputCode.GoSouth;
+                actionCode = InputCode.GoSouth;
                 break;
             case "take item":
-                code = inputCode.TakeItem;
+                actionCode = InputCode.TakeItem;
                 break;
             case "drop item":
-                code = inputCode.DropItem;
+                actionCode = InputCode.DropItem;
                 break;
             case "use item":
             case "use":
-                code = inputCode.UseItem;
+                actionCode = InputCode.UseItem;
                 break;
-                
         }
+        return actionCode;
+    }
+
+    // Convert input code to a string to print for the player
+    private static String getInputString(InputCode actionCode) {
+        switch (actionCode) {
+            case DropItem:
+                return ">>Drop item";
+            case GoEast:
+                return ">>Go east";
+            case GoNorth:
+                return ">>Go north";
+            case GoSouth:
+                return ">>Got south";
+            case GoWest:
+                return ">>Go west";
+            case Invalid:
+                return "The input is invalid, pleas try again:";
+            case OpenDoor:
+                return ">>Opent the door";
+            case TakeItem:
+                return ">>Take item";
+            case UseItem:
+                return ">>Use item";
+        }
+        return null;
+    }
+
+    // After the player performs an action, transition to the next state
+    private static void takeAction(InputCode actionCode) {
+        NextNode next = current.tryTransition(actionCode);
+        current = next.node;
+        System.out.println(next.message);
     }
 
     // #region GmaeStart
@@ -116,9 +152,16 @@ public class Main {
                         "heard in the distance. You are not thirsty, but you rather have a craving for\n" +
                         "justice.\n" +
                         "What would you like to do?: ",
-                null);
+                0);
+        nodes.add(node);
+        node = new AdvantureNode(
+                "\nThis is the second Node" +
+                    "What would you like to do?: ",
+                1);
         nodes.add(node);
     }
+    private static void initTransitions(){
+        nodes[0].
+    }
     // #endregion
-
 }

@@ -1,5 +1,4 @@
-package Enums;
-public enum inputCode{
+public enum InputCode{
     Invalid,
     OpenDoor,
     GoNorth,

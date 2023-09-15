@@ -1,20 +1,60 @@
 import java.util.ArrayList;
 
 public class AdvantureNode {
-    public String text;
-    public ArrayList<AdvantureNode> options;
 
-    //Default constructor for an AdvantureNode
-    public AdvantureNode(String text, ArrayList<AdvantureNode> nextNodes) {
+    private int stateId;
+    private String text;
+    public String getText() {
+        return text;
+    }
+
+    private ArrayList<Transition> transitions;
+
+    // Default constructor for an AdvantureNode
+    public AdvantureNode(String text, int id) {
+        stateId = id;
         this.text = text;
-        options = new ArrayList<>();
-        //if recieve no null
-        if (nextNodes != null)
-            for (AdvantureNode advantureNode : nextNodes) {
-                options.add(advantureNode);
+        transitions = new ArrayList<>();
+    }
+    public void initTransitions(ArrayList<Transition> trans){
+        for(Transition transition :trans){
+            transitions.add(new Transition(transition));
+        }
+    }
+
+    // Check if the action fits one of the transitions of this state, and return the
+    // next state and a message.
+    public NextNode tryTransition(InputCode actionCode) {
+        for (Transition transition : transitions) {
+            if (transition.isTransitionPossible(actionCode)) {
+                return new NextNode(transition.getNextNode(), getMessage(actionCode));
             }
-        if (options.isEmpty())
-            options.add(null);
-        System.out.println("Options: "+ options.size());
+        }
+        return new NextNode(this, getMessage(InputCode.Invalid));
+    }
+
+    // Convert action code to a printable message
+    private String getMessage(InputCode actionCode) {
+        switch (actionCode) {
+            case DropItem:
+                return "You drop item";
+            case GoEast:
+                return "You go east";
+            case GoNorth:
+                return "You go north";
+            case GoSouth:
+                return "You got south";
+            case GoWest:
+                return "You go west";
+            case Invalid:
+                return "Unfortunatelly you are unable to use this action here";
+            case OpenDoor:
+                return "You opent the door";
+            case TakeItem:
+                return "You take item";
+            case UseItem:
+                return "You use item";
+        }
+        return null;
     }
 }
