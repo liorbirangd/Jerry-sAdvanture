@@ -18,7 +18,14 @@ public class Main {
         readInitInput();
         initNodes();
         initTransitions();
+        //Normal>>
         startAdvanture();
+        //<<
+        //Temp>>
+        //initArrayCode();
+        //startAdvantureArrays();
+        //<<
+        
     }
 
     private static AdvantureNode current;
@@ -40,7 +47,7 @@ public class Main {
             takeAction(inputCode);
         }
     }
-
+    
     // Recieve input from the player and check for validity
     private static InputCode getInput() {
         String input = scanner.nextLine();
@@ -50,42 +57,42 @@ public class Main {
             case "open door":
             case "door":
             case "open":
-            case"o":
+            case "o":
                 actionCode = InputCode.OpenDoor;
                 break;
             case "go north":
             case "north":
-            case"n":
+            case "n":
                 actionCode = InputCode.GoNorth;
                 break;
             case "go east":
             case "east":
-            case"e":
+            case "e":
                 actionCode = InputCode.GoEast;
                 break;
             case "go west":
             case "west":
-            case"w":
+            case "w":
                 actionCode = InputCode.GoWest;
                 break;
             case "go south":
             case "south":
-            case"s":
+            case "s":
                 actionCode = InputCode.GoSouth;
                 break;
             case "take item":
             case "take":
-            case"t":
+            case "t":
                 actionCode = InputCode.TakeItem;
                 break;
             case "drop item":
             case "drop":
-            case"d":
+            case "d":
                 actionCode = InputCode.DropItem;
                 break;
             case "use item":
             case "use":
-            case"u":
+            case "u":
                 actionCode = InputCode.UseItem;
                 break;
             case "quit":
@@ -139,8 +146,6 @@ public class Main {
         isQuit = true;
     }
 
-    // #region GmaeStart
-    // #endregion
     // Print the ASCII art fot the game title
     private static void printTitle() {
         System.out.println("\r\n" +
@@ -206,15 +211,6 @@ public class Main {
                 1);
         nodes.add(node);
         node = new AdvantureNode(
-                "\nYou are in a long hallway. There’s a man wearing glasses at the end of it, he" +
-                        "\nlooks harmless. West is a wall, east is the man, to the north is nothing but" +
-                        "\nempty offices, a desperate sight. The carpeting in the hallway feels soft, you" +
-                        "\nhear the clicking of a mouse in the distance. Your office is south (behind" +
-                        "\nyou)." +
-                        "\nWhat would you like to do?: ",
-                1);
-        nodes.add(node);
-        node = new AdvantureNode(
                 "\nou take the calculator from your desk. It’s a Casio FX-85gt Plus. The" +
                         "\ndisplay shows the number 0.1134. You turn it upside down; now the Casio" +
                         "\ngreets you with a friendly “hello”, nice. You hold the calculator in your hand." +
@@ -227,16 +223,115 @@ public class Main {
                         "\nnWhat would you like to do?: ",
                 3);
         nodes.add(node);
+
+        node = new AdvantureNode(
+                "\nTYou enter the hallway with the Casio FX-85gt stand-by. Having this small device" +
+                        "\ngreet you puts you in a good mood, somehow the building feels less lonely than" +
+                        "\nbefore. West is a wall, looking east you stare into the darkness, the corridor is too" +
+                        "\nlong to see the end. To the north you see an office with what looks like a small" +
+                        "\ncreature in a corner. The carpeting in the hallway feels soft, you hear someone" +
+                        "\nexplaining algorithms to your north." +
+                        "\nnWhat would you like to do?: ",
+                4);
+        nodes.add(node);
+        node = new AdvantureNode(
+                "\nYou enter the office. To your surprise a small dog is sitting in the corner. Surely this" +
+                        "\nbreaks any number of university regulations! In a high-pitched voice the dog tells" +
+                        "\nyou how to write even more cool words on your Casio FX-85gt, good boi! To the" +
+                        "\nnorth you see an open window, a ladder hangs down from it, it looks so dangerous!" +
+                        "\nAn LCD display shows a youtube video about developing algorithms." +
+                        "\nnWhat would you like to do?: ",
+                5);
+        nodes.add(node);
+
     }
 
     // Create the transitions between the nodes
     private static void initTransitions() {
-        ArrayList<Transition> n0 = new ArrayList<>();
-        n0.add(new Transition(getNodeById(1), InputCode.OpenDoor));
-        n0.add(new Transition(getNodeById(2), InputCode.TakeItem));
-        n0.add(new Transition(getNodeById(3), InputCode.GoEast));
-        getNodeById(0).initTransitions(n0);
+
+        ArrayList<Transition> transition = new ArrayList<>();
+        // from 0
+        transition.add(new Transition(getNodeById(1), InputCode.OpenDoor));
+        transition.add(new Transition(getNodeById(2), InputCode.TakeItem));
+        getNodeById(0).initTransitions(transition);
+        // from 1
+        transition.clear();
+        transition.add(new Transition(getNodeById(0), InputCode.GoSouth));
+        transition.add(new Transition(getNodeById(3), InputCode.GoEast));
+        getNodeById(1).initTransitions(transition);
+        // from 2
+        transition.clear();
+        transition.add(new Transition(getNodeById(4), InputCode.OpenDoor));
+        getNodeById(2).initTransitions(transition);
+        // from 3
+        transition.clear();
+        getNodeById(3).initTransitions(transition);
+        // from 4
+        transition.clear();
+        transition.add(new Transition(getNodeById(1), InputCode.DropItem));
+        transition.add(new Transition(getNodeById(5), InputCode.GoNorth));
+        getNodeById(4).initTransitions(transition);
+        // from 5
+        transition.clear();
+        transition.add(new Transition(getNodeById(4), InputCode.GoSouth));
+        getNodeById(5).initTransitions(transition);
 
     }
 
+    // //#region ArrayCode
+    private static int currentStateId = 0;
+    private static String[] storyArrays;
+    private static InputCode[][] transitionsArrays = {
+            { null, InputCode.OpenDoor, InputCode.TakeItem, null, null, null },
+            { InputCode.GoSouth, null, null, InputCode.GoEast, null, null },
+            { null, null, null, null, InputCode.OpenDoor, null },
+            { null, null, null, null, null, null },
+            { null, InputCode.DropItem, null, null, null, InputCode.GoNorth },
+            { null, InputCode.GoSouth, null, null, null, null } };
+
+    private static void initArrayCode() {
+        storyArrays = new String[nodes.size()];
+        for (int i = 0; i < storyArrays.length; i++) {
+            storyArrays[i] = nodes.get(i).getText();
+        }
+    }
+
+    public static String getStory(int id, String[] storyArray) {
+        if (storyArray == null || id >= storyArray.length)
+            return "ERROR";
+        System.out.println(storyArray[id]);
+        return storyArray[id];
+    }
+
+    public static void takeActionArrays(InputCode actionCode) {
+        if (actionCode == InputCode.Quit) {
+            quitGame();
+            return;
+        }
+        int nextStateID = currentStateId;
+        for (int j = 0; j < transitionsArrays[currentStateId].length; j++) {
+            if (transitionsArrays[currentStateId][j] == actionCode)
+                nextStateID = j;
+        }
+        currentStateId = nextStateID;
+        System.out.println("STATE:+ "+currentStateId);
+        getStory(currentStateId,storyArrays);
+    }
+    private static void startAdvantureArrays() {
+        current = nodes.get(0);
+        InputCode inputCode = null;
+        // Run through all nodes until reacing a null node
+        // Print node text, and wait for player's input
+        getStory(currentStateId, storyArrays);
+        while (!isQuit && current != null) {
+            inputCode = getInput();
+            while (inputCode == InputCode.Invalid) {
+                System.out.println(getInputString(InputCode.Invalid));
+                inputCode = getInput();
+            }
+            System.out.println(getInputString(inputCode));
+            takeActionArrays(inputCode);
+        }
+    }
+    //#endregion
 }
