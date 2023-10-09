@@ -15,6 +15,9 @@ public class AdvantureNode {
 
     private ArrayList<Transition> transitions;
 
+    public ArrayList<Transition> getTransitions() {
+        return new ArrayList<Transition>(transitions);
+    }
     // Default constructor for an AdvantureNode
     public AdvantureNode(String text, int id) {
         stateId = id;

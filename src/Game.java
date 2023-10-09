@@ -4,7 +4,7 @@ import java.util.Optional;
 import java.util.Scanner;
 import java.time.LocalDateTime;
 
-public class Main {
+public class Game {
     private static Scanner scanner;
     private static String playerName;
     private static int playerBirthYear;
@@ -18,21 +18,27 @@ public class Main {
         readInitInput();
         initNodes();
         initTransitions();
-        //Normal>>
-        startAdvanture();
-        //<<
-        //Temp>>
-        //initArrayCode();
-        //startAdvantureArrays();
-        //<<
-        
+        current = nodes.get(0);
+        // Normal>>
+        // startAdvanture();
+        // <<
+
+        // Auto print>>
+        tellStory();
+        // <<
+
+        // Temp array code>>
+        // initArrayCode();
+        // startAdvantureArrays();
+        // <<
+
     }
 
     private static AdvantureNode current;
 
     // The main game loop
     private static void startAdvanture() {
-        current = nodes.get(0);
+
         InputCode inputCode = null;
         // Run through all nodes until reacing a null node
         // Print node text, and wait for player's input
@@ -47,7 +53,29 @@ public class Main {
             takeAction(inputCode);
         }
     }
-    
+
+    public static void tellStory() {
+        tellStory(current, new ArrayList<AdvantureNode>());
+    }
+
+    // automatically play and print out the story
+    private static void tellStory(AdvantureNode node, ArrayList<AdvantureNode> visited) {
+        boolean isFirst = true;
+        visited.add(node);
+        System.out.print(node.getText());
+        for (Transition transition : node.getTransitions()) {
+            NextNode next = node.tryTransition(transition.getRequiredAction());
+            if (!visited.contains(next.node)) {
+                if (isFirst)
+                    isFirst = false;
+                else
+                    System.out.println(node.getText());
+                System.out.println("\n" + next.message);
+                tellStory(next.node, visited);
+            }
+        }
+    }
+
     // Recieve input from the player and check for validity
     private static InputCode getInput() {
         String input = scanner.nextLine();
@@ -146,6 +174,7 @@ public class Main {
         isQuit = true;
     }
 
+    // #region StartGame
     // Print the ASCII art fot the game title
     private static void printTitle() {
         System.out.println("\r\n" +
@@ -189,7 +218,7 @@ public class Main {
     private static void initNodes() {
         nodes = new ArrayList<AdvantureNode>();
         AdvantureNode node = new AdvantureNode(
-                "ou are standing in an abandoned university office. There are neither" +
+                "\nYou are standing in an abandoned university office. There are neither" +
                         "\nstudents nor teachers around you. There’s a table in front of you with" +
                         "\nvarious papers, pens, a small puzzle toy, and a calculator." +
                         "\nA large window shows an empty office building; there are no Zombies in the" +
@@ -211,7 +240,7 @@ public class Main {
                 1);
         nodes.add(node);
         node = new AdvantureNode(
-                "\nou take the calculator from your desk. It’s a Casio FX-85gt Plus. The" +
+                "\nYou take the calculator from your desk. It’s a Casio FX-85gt Plus. The" +
                         "\ndisplay shows the number 0.1134. You turn it upside down; now the Casio" +
                         "\ngreets you with a friendly “hello”, nice. You hold the calculator in your hand." +
                         "\nnWhat would you like to do?: ",
@@ -225,7 +254,7 @@ public class Main {
         nodes.add(node);
 
         node = new AdvantureNode(
-                "\nTYou enter the hallway with the Casio FX-85gt stand-by. Having this small device" +
+                "\nYou enter the hallway with the Casio FX-85gt stand-by. Having this small device" +
                         "\ngreet you puts you in a good mood, somehow the building feels less lonely than" +
                         "\nbefore. West is a wall, looking east you stare into the darkness, the corridor is too" +
                         "\nlong to see the end. To the north you see an office with what looks like a small" +
@@ -277,8 +306,9 @@ public class Main {
         getNodeById(5).initTransitions(transition);
 
     }
+    // #endregion
 
-    // //#region ArrayCode
+    // #region ArrayCode
     private static int currentStateId = 0;
     private static String[] storyArrays;
     private static InputCode[][] transitionsArrays = {
@@ -314,9 +344,10 @@ public class Main {
                 nextStateID = j;
         }
         currentStateId = nextStateID;
-        System.out.println("STATE:+ "+currentStateId);
-        getStory(currentStateId,storyArrays);
+        System.out.println("STATE:+ " + currentStateId);
+        getStory(currentStateId, storyArrays);
     }
+
     private static void startAdvantureArrays() {
         current = nodes.get(0);
         InputCode inputCode = null;
@@ -333,5 +364,10 @@ public class Main {
             takeActionArrays(inputCode);
         }
     }
-    //#endregion
+
+    public static void tellStory(int startStateId, String[][] transMatrix, String[] stateArray, boolean[] visited) {
+        tellStory();
+    }
+
+    // #endregion
 }
